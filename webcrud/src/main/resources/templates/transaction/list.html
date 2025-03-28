@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transactions List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a th:href="@{/home}" class="navbar-brand">← Back to Dashboard</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1 class="mb-4">Transactions</h1>
+
+        <!-- Success Message -->
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <!-- Search Form -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form th:action="@{/transactions/search}" method="get" class="d-flex">
+                    <input type="text" name="productName" class="form-control me-2" 
+                           placeholder="Search by Product Name" 
+                           th:value="${searchTerm}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+            <div class="col-md-6 text-end">
+                <a th:href="@{/transactions/new}" class="btn btn-success">Create New Transaction</a>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Product</th>
+                    <th>Company</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.transactionID}"></td>
+                    <td th:text="${transaction.productName}"></td>
+                    <td th:text="${transaction.companyName}"></td>
+                    <td th:text="${transaction.quantity}"></td>
+                    <td th:text="${transaction.totalPrice}"></td>
+                    <td th:text="${#temporals.format(transaction.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <a th:href="@{/transactions/edit/{id}(id=${transaction.transactionID})}" 
+                           class="btn btn-sm btn-warning">Edit</a>
+                        <a th:href="@{/transactions/delete/{id}(id=${transaction.transactionID})}" 
+                           class="btn btn-sm btn-danger" 
+                           onclick="return confirm('Are you sure you want to delete this transaction?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- No Transactions Message -->
+        <div th:if="${transactions.isEmpty()}" class="alert alert-info">
+            No transactions found.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

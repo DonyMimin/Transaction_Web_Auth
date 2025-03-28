@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product != null and product.productID != null ? 'Edit Product' : 'Add New Product'}">Product Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row mb-3">
+            <div class="col">
+                <h1 th:text="${product != null and product.productID != null ? 'Edit Product' : 'Add New Product'}">Product Form</h1>
+            </div>
+            <div class="col-auto">
+                <a th:href="@{/products}" class="btn btn-secondary">Back to List</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <!-- Menggunakan th:with untuk menentukan action -->
+                <form th:object="${product}" method="post"
+                      th:with="formAction=${product != null and product.productID != null ? '/products/update/' + product.productID : '/products'}"
+                      th:action="@{${formAction}}">
+
+                    <!-- Hidden Input untuk productID -->
+                    <input type="hidden" th:field="*{productID}" />
+                    
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Nama Product</label>
+                        <input type="text" class="form-control" id="productName" th:field="*{productName}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" th:field="*{price}" step="0.01" min="0" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="stock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="stock" th:field="*{stock}" min="0">
+                            <div class="text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="reset" class="btn btn-outline-secondary me-md-2">Reset</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
